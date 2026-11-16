@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Health Scan Bridge</string>
+    <string name="health_connect_permission_rationale">
+        Health Scan Bridge writes the body composition values it reads from your scale screenshots into
+        Health Connect: weight, height, body fat, lean body mass, body water mass, bone mass and
+        basal metabolic rate. Only the values you confirm on the review screen are written.
+    </string>
+</resources>
