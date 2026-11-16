@@ -1,5 +1,14 @@
 # Health Scan Bridge
 
+Quick word from a human. I have Xiaomi Mijia Body Composition Scale S400 Pro, and it only
+connects to Xiaomi Home app, which for some reason doesn't integrate with Health Connect.
+So i vibe coded this app to 'fix the problem'. I export the scale Weight report to image,
+then import that image in this app. U need to first allow access to Health Connect then
+u can save the stats. App should work with other apps screen-capture, but it was not
+tested. If it doesn't work i am sure u can copy this repo and vibe code support for new style
+of image. Or share an image and i will add support when i find time.
+The rest is all AI, i am sure there is no spelling mistakes :D
+
 Import a body-composition scale **screenshot**, read every metric off it on-device with OCR,
 review and correct the numbers, then write the confirmed values into **Health Connect**.
 Everything that Health Connect cannot store stays in the app's own history.
