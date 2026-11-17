@@ -86,6 +86,32 @@ fun ReviewScreen(draft: Draft, viewModel: ScanViewModel) {
             }
         }
 
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = viewModel::commit,
+                enabled = !draft.pushed,
+                modifier = Modifier.weight(1f),
+            ) { Text(if (draft.pushed) "Written" else "Write") }
+            OutlinedButton(
+                onClick = viewModel::saveLocal,
+                enabled = !draft.savedLocally,
+                modifier = Modifier.weight(1f),
+            ) { Text(if (draft.savedLocally) "Saved" else "Save locally") }
+            TextButton(onClick = viewModel::discard) { Text("Discard") }
+        }
+        if (draft.pushed || draft.savedLocally) {
+            val status = buildString {
+                if (draft.pushed) {
+                    append("Already written to Health Connect. Edit a value to write it again.")
+                }
+                if (draft.savedLocally) {
+                    if (isNotEmpty()) append(" ")
+                    append("Already saved in this app.")
+                }
+            }
+            Text(status, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
         FieldGroup(
             title = "Written to Health Connect",
             subtitle = "Only the ticked fields are written.",
@@ -107,12 +133,6 @@ fun ReviewScreen(draft: Draft, viewModel: ScanViewModel) {
             onValue = viewModel::updateValue,
             onToggle = { _, _ -> },
         )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = viewModel::commit, modifier = Modifier.weight(1f)) { Text("Write") }
-            OutlinedButton(onClick = viewModel::saveLocal, modifier = Modifier.weight(1f)) { Text("Save locally") }
-            TextButton(onClick = viewModel::discard) { Text("Discard") }
-        }
 
         OutlinedButton(onClick = { showOcr = !showOcr }, modifier = Modifier.fillMaxWidth()) {
             Text(if (showOcr) "Hide recognised text" else "Show recognised text (${draft.ocrLines.size} lines)")

@@ -39,6 +39,8 @@ data class Draft(
     val ocrConfidence: Float,
     val timeText: String,
     val timeError: String? = null,
+    val savedLocally: Boolean = false,
+    val pushed: Boolean = false,
 )
 
 data class UiState(
@@ -171,6 +173,7 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
                         ocrLines = outcome.rawLines,
                         ocrConfidence = outcome.ocrConfidence,
                         timeText = capturedAt.format(timeFormat),
+                        savedLocally = true,
                     ),
                 )
             }
@@ -182,7 +185,13 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
         if (text.isBlank()) {
             _state.update { state ->
                 val current = state.draft ?: return@update state
-                state.copy(draft = current.copy(measurement = current.measurement.without(key)))
+                state.copy(
+                    draft = current.copy(
+                        measurement = current.measurement.without(key),
+                        savedLocally = false,
+                        pushed = false,
+                    ),
+                )
             }
             return
         }
@@ -211,6 +220,8 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
             current.copy(
                 measurement = updated,
                 selected = current.selected + key,
+                savedLocally = false,
+                pushed = false,
             ).let { state.copy(draft = it) }
         }
     }
@@ -219,7 +230,7 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
         _state.update { state ->
             val current = state.draft ?: return@update state
             val selected = if (on) current.selected + key else current.selected - key
-            current.copy(selected = selected).let { state.copy(draft = it) }
+            current.copy(selected = selected, savedLocally = false, pushed = false).let { state.copy(draft = it) }
         }
     }
 
@@ -231,6 +242,7 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
                 measurement = current.measurement.copy(capturedAt = shifted),
                 timeText = shifted.format(timeFormat),
                 timeError = null,
+                pushed = false,
             ).let { state.copy(draft = it) }
         }
     }
@@ -247,6 +259,7 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
                     measurement = current.measurement.copy(capturedAt = parsed.zonedDateTime),
                     timeText = text,
                     timeError = null,
+                    pushed = false,
                 ).let { state.copy(draft = it) }
             }
         }
@@ -254,10 +267,15 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
 
     fun commit() {
         val draft = _state.value.draft ?: return
+        if (draft.pushed) return
         val keys = draft.selected.filter { FieldSchema.byKey[it]?.hcType != null }.toSet()
         if (keys.isEmpty()) {
             _state.update { it.copy(notice = "No Health Connect fields selected.") }
             return
+        }
+        _state.update { state ->
+            val current = state.draft ?: return@update state
+            state.copy(draft = current.copy(pushed = true))
         }
         viewModelScope.launch {
             _state.update { it.copy(busy = "Writing to Health Connect…") }
@@ -267,7 +285,12 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
                 repository.write(draft.measurement.copy(warnings = warnings), keys, System.currentTimeMillis())
             }.getOrElse {
                 _state.update { state ->
-                    state.copy(busy = null, notice = "Health Connect error: ${it.message}")
+                    val current = state.draft
+                    state.copy(
+                        busy = null,
+                        notice = "Health Connect error: ${it.message}",
+                        draft = current?.copy(pushed = false),
+                    )
                 }
                 return@launch
             }
@@ -289,7 +312,11 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
                 state.copy(
                     busy = null,
                     notice = message.ifBlank { "Nothing written." },
-                    draft = current?.copy(measurement = saved),
+                    draft = current?.copy(
+                        measurement = saved,
+                        savedLocally = true,
+                        pushed = outcome.written.isNotEmpty(),
+                    ),
                     history = store.loadAll(),
                     availability = availability,
                 )
@@ -302,7 +329,12 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
         val warnings = Consistency.reconcile(draft.measurement.values).warnings
         store.save(draft.measurement.copy(warnings = (draft.measurement.warnings + warnings).distinct()))
         _state.update { state ->
-            state.copy(notice = "Saved locally.", history = store.loadAll())
+            val current = state.draft
+            state.copy(
+                notice = "Saved locally.",
+                draft = current?.copy(savedLocally = true),
+                history = store.loadAll(),
+            )
         }
     }
 

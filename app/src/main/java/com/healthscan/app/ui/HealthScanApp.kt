@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,7 +53,13 @@ fun HealthScanApp(viewModel: ScanViewModel) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+                val insets = ScaffoldDefaults.contentWindowInsets
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(insets)
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                ) {
                     Text("Health Scan Bridge", style = MaterialTheme.typography.titleLarge)
                     Text(
                         "Scale screenshot to Health Connect",

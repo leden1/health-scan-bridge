@@ -4,33 +4,28 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- balloon string -->
     <path
-        android:pathData="M36,34h36a8,8 0 0,1 8,8v32a8,8 0 0,1 -8,8h-36a8,8 0 0,1 -8,-8v-32a8,8 0 0,1 8,-8z"
+        android:pathData="M54,72 C50,77 58,80 54,86"
         android:strokeColor="#FFFFFFFF"
-        android:strokeWidth="5"
+        android:strokeWidth="2.5"
         android:strokeLineCap="round"
-        android:strokeLineJoin="round"
         android:fillColor="#00000000"/>
+    <!-- knot -->
     <path
-        android:pathData="M42,44h24a4,4 0 0,1 4,4v6a4,4 0 0,1 -4,4h-24a4,4 0 0,1 -4,-4v-6a4,4 0 0,1 4,-4z"
-        android:strokeColor="#FF8FE3D8"
-        android:strokeWidth="3"
-        android:fillColor="#00000000"/>
+        android:pathData="M49,68 L59,68 L54,73 Z"
+        android:fillColor="#FFD6293B"/>
+    <!-- heart balloon -->
     <path
-        android:pathData="M40,50 L46,50 L49,45 L53,55 L57,47 L60,50 L68,50"
+        android:pathData="M54,36 C48,24 26,26 26,42 C26,54 42,63 54,70 C66,63 82,54 82,42 C82,26 60,24 54,36 Z"
+        android:fillColor="#FFFF4D5A"
         android:strokeColor="#FFFFFFFF"
-        android:strokeWidth="3"
+        android:strokeWidth="2"/>
+    <!-- gloss highlight -->
+    <path
+        android:pathData="M36,42 C34,34 41,30 47,31"
+        android:strokeColor="#B3FFFFFF"
+        android:strokeWidth="4"
         android:strokeLineCap="round"
-        android:strokeLineJoin="round"
         android:fillColor="#00000000"/>
-    <path
-        android:pathData="M38,66h32"
-        android:strokeColor="#FF8FE3D8"
-        android:strokeWidth="3"
-        android:strokeLineCap="round"/>
-    <path
-        android:pathData="M38,72h20"
-        android:strokeColor="#FF8FE3D8"
-        android:strokeWidth="3"
-        android:strokeLineCap="round"/>
 </vector>
