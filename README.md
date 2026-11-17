@@ -117,7 +117,8 @@ app/src/main/java/com/healthscan/app/
 
 ## Release
 
-`v1.0` carries the debug-signed `app-debug.apk` (on-device ML Kit model bundled, ~78 MB). Install it
+The current build is `v1.0.1`, which carries the debug-signed `health-scan-bridge-1.0.1-debug.apk`
+(on-device ML Kit model bundled, ~78 MB). Install it
 directly, or build it yourself with the commands below. The application id stays
 `com.healthscan.app`, so updating over an existing install keeps its history and Health Connect
 permissions.
